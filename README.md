@@ -16,6 +16,14 @@ postgress
 cd
 git clone https://github.com/johntips/webapi-react-hypercard.git && cd webapi-react-hypercard 
 bundle install
+
+psql -U postgress
+>> create database filter_api_development;
+// これでpostgressにデータベースを作成
+
+rake db:migrate
+//これでデータベース反映
+
 ```
 *Edit `config/database.yml`*
 
