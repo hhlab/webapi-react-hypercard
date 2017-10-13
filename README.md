@@ -34,7 +34,7 @@ default: &default
   database: filter_api_development
 ```
 
-*DB create+migrate
+*DB create+migrate*
 ```
 rake db:setup
 ```
