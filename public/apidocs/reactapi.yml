@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/)."
+  description: "慶応義塾大学　萩野服部研究室プロダクト　react-hhlab-hypercardのapi仕様書です"
   version: "1.0.0"
   title: "React-HHLab-Hypercard"
   termsOfService: "xxx.xxx.xxx.xxx/api/v1/..."
@@ -15,7 +15,7 @@ tags:
 - name: "user"
   description: "ユーザーはログインして必要な操作をするのに必要なアイデンティティ。"
   externalDocs:
-    description: ""詳しい構成内容外部記述予定"
+    description: "詳しい構成内容外部記述予定"
     url: "http://swagger.io"
 - name: "deck"
   description: "デッキとは、カードの集合を示し、そのカード群を紐付けるのはid_deck"
@@ -24,15 +24,14 @@ tags:
   externalDocs:
     description: "詳しい構成内容外部記述予定"
     url: "http://swagger.io"
-
 schemes:
 - "http"
 paths:
-  /pet:
+  /deck:
     post:
       tags:
-      - "pet"
-      summary: "Add a new pet to the store"
+      - "deck"
+      summary: "create new deck /新規デッキ作成のapiです"
       description: ""
       operationId: "addPet"
       consumes:
@@ -382,8 +381,8 @@ paths:
     post:
       tags:
       - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
+      summary: "新規ユーザー作成 Create user"
+      description: "簡単にid,pwを入力し、postするだけ"
       operationId: "createUser"
       produces:
       - "application/xml"
@@ -395,50 +394,6 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
       responses:
         default:
           description: "successful operation"
@@ -477,8 +432,13 @@ paths:
               type: "string"
               format: "date-time"
               description: "date in UTC when token expires"
+          examples:
+            "application/json":
+                username: "hattori hagino"
+                usersession: "9washl34548ay54qqqql5o87ya5534k"
         400:
           description: "Invalid username/password supplied"
+
   /user/logout:
     get:
       tags:
@@ -493,31 +453,47 @@ paths:
       responses:
         default:
           description: "successful operation"
-  /user/{username}:
+
+  /user/{id_user}:
     get:
       tags:
       - "user"
-      summary: "Get user by user name"
+      summary: "ユーザー情報を取得します /Get user by user_id params"
       description: ""
       operationId: "getUserByName"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
-      - name: "username"
+      - name: "id_user"
         in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
+        description: "id_userにあたるint数値をなげます。取得時には、ユーザーセッションを確認します"
         required: true
-        type: "string"
+        type: "integer"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/User"
+          headers:
+            X-hypercard-Authorization:
+              type: "string"
+              description: "QWRtaW5pc3RyYXRvcjpjeWJvenU= /hash値を加えます"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+          examples:
+            "application/json":
+              username:	"hattori hagino" 
+              firstName:	"hattori"
+              lastName:	"hagino"
+              email:	"hhlab@gmail.com"
         400:
           description: "Invalid username supplied"
         404:
           description: "User not found"
+        responses:
     put:
       tags:
       - "user"
@@ -542,26 +518,6 @@ paths:
       responses:
         400:
           description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
         404:
           description: "User not found"
 securityDefinitions:
@@ -617,9 +573,6 @@ definitions:
   User:
     type: "object"
     properties:
-      id:
-        type: "integer"
-        format: "int32"
       username:
         type: "string"
       firstName:
